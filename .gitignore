@@ -300,5 +300,6 @@ override.tf.json
 
 # End of https://www.gitignore.io/api/terraform
 
-/src/StorageMSIFunction/Properties/PublishProfiles
+**/PublishProfiles/*
+**/.telemetry/*
 terraform/deploy_app.sh
