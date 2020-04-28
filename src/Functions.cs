@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Azure.Core;
+using Azure.Identity;
 using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
 using Microsoft.AspNetCore.Http;
@@ -25,7 +26,10 @@ namespace StorageMSIFunction
             // Using DefaultAzureCredential allows for local dev by setting environment variables for the current user, provided said user
             // has the necessary credentials to perform the operations the MSI of the Function app needs in order to do its work. Including
             // interactive credentials will allow browser-based login when developing locally.
-            return new Azure.Identity.DefaultAzureCredential(includeInteractiveCredentials: true);
+
+            // We exclude checking the VSCode credential due to a bug: https://github.com/Azure/azure-sdk-for-net/issues/11509
+            // This forces fall-through to Azure CLI credential which works in VSCode Dev Container w/o issue
+            return new DefaultAzureCredential(new DefaultAzureCredentialOptions { ExcludeVisualStudioCodeCredential = true });
         });
 
         private static readonly Lazy<IAzure> _legacyAzure = new Lazy<IAzure>(() =>
